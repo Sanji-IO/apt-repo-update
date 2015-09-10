@@ -7,3 +7,5 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 
 ADD apt-repo-update /bin/apt-repo-update
+
+EXPOSE 9000
