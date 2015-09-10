@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+DATA=${DATA:-/data}
+DISTRIBUTION=${DISTRIBUTION:-unstable}
+REPO=$DATA/$DISTRIBUTION
+
+mkdir -p $REPO
+dpkg-scanpackages $REPO /dev/null | gzip -9c > $REPO/Packages.gz
+echo "Updated repo: $DISTRIBUTION"
