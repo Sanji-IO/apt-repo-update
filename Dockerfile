@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM sanji/webhook
 
 MAINTAINER Zack YL Shih <zackyl.shih@moxa.com>
 
@@ -7,5 +7,3 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 
 ADD apt-repo-update /bin/apt-repo-update
-
-CMD "/bin/apt-repo-update"
