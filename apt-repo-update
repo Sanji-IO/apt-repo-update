@@ -1,10 +1,36 @@
 #!/bin/bash
-set -e
+set -xe
 
 DATA=${DATA:-/data}
 DISTRIBUTION=${DISTRIBUTION:-unstable}
 REPO=$DATA/$DISTRIBUTION
+INCOMING=$DATA/incoming/$DISTRIBUTION
 
-mkdir -p $REPO
-dpkg-scanpackages $DISTRIBUTION /dev/null | gzip -9c > $REPO/Packages.gz
-echo "Updated repo: $DISTRIBUTION"
+#-- settings
+export GNUPGHOME=$DATA/gpgkey
+export KEYNAME="moxa-sys-apt"
+
+#-- one-time setup
+if [ ! -e "$GNUPGHOME/secring.gpg" ] ; then
+   gpg --import -v -v ./secret.gpg
+   gpg --import -v -v ./public.gpg
+   gpg --list-keys
+fi
+
+#-- symlink .deb files from adjacent sub-directories
+# find ../repos -name '*.deb' -exec ln -s '{}' . \;
+
+rm -rf $REPO/*
+cp -r $INCOMING/*.deb $REPO
+dpkg-sig -k $KEYNAME -s builder $REPO/*.deb
+
+cd $REPO
+#-- build Packages file
+apt-ftparchive packages . > Packages
+bzip2 -kf Packages
+
+#-- signed Release file
+apt-ftparchive release . > Release
+gpg --yes -abs -u $KEYNAME -o Release.gpg Release
+
+echo "APT Repo has been signed and updated."
