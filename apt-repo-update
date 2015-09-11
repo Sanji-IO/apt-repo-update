@@ -6,6 +6,9 @@ DISTRIBUTION=${DISTRIBUTION:-unstable}
 REPO=$DATA/$DISTRIBUTION
 INCOMING=$DATA/incoming/$DISTRIBUTION
 
+mkdir -p $INCOMING
+mkdir -p $REPO
+
 #-- settings
 export GNUPGHOME=$DATA/gpgkey
 export KEYNAME="moxa-sys-apt"
