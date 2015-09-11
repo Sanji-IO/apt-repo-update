@@ -6,5 +6,5 @@ DISTRIBUTION=${DISTRIBUTION:-unstable}
 REPO=$DATA/$DISTRIBUTION
 
 mkdir -p $REPO
-dpkg-scanpackages $REPO /dev/null | gzip -9c > $REPO/Packages.gz
+dpkg-scanpackages $DISTRIBUTION /dev/null | gzip -9c > $REPO/Packages.gz
 echo "Updated repo: $DISTRIBUTION"
