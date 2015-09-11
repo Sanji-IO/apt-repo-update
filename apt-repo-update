@@ -6,7 +6,10 @@ DISTRIBUTION=${DISTRIBUTION:-unstable}
 REPO=$DATA/$DISTRIBUTION
 INCOMING=$DATA/incoming/$DISTRIBUTION
 
-mkdir -p $INCOMING
+if [ ! -e "$INCOMING" ] ; then
+	mkdir -p $INCOMING && chmod 777 $INCOMING
+fi
+
 mkdir -p $REPO
 
 #-- settings
