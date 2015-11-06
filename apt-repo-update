@@ -36,6 +36,7 @@ cd $REPO
 #-- build Packages file
 apt-ftparchive packages . > Packages
 bzip2 -kf Packages
+chmod 775 $REPO/*
 
 #-- signed Release file
 apt-ftparchive release . > Release
