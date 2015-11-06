@@ -1,8 +1,10 @@
 #!/bin/bash
 set -xe
 
+# ./apt-repo-update branch
+
 DATA=${DATA:-/data}
-DISTRIBUTION=${DISTRIBUTION:-unstable}
+DISTRIBUTION=${$1:-unstable}
 REPO=$DATA/$DISTRIBUTION
 INCOMING=$DATA/incoming/$DISTRIBUTION
 
@@ -39,4 +41,4 @@ bzip2 -kf Packages
 apt-ftparchive release . > Release
 gpg --yes -abs -u $KEYNAME -o Release.gpg Release
 
-echo "APT Repo has been signed and updated."
+echo "APT Repo: $DISTRIBUTION has been signed and updated."
