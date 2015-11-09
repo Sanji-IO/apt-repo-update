@@ -4,7 +4,7 @@ set -xe
 # ./apt-repo-update branch
 
 DATA=${DATA:-/data}
-DISTRIBUTION=${$1:-unstable}
+DISTRIBUTION=${1:-unstable}
 REPO=$DATA/$DISTRIBUTION
 INCOMING=$DATA/incoming/$DISTRIBUTION
 
