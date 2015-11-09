@@ -12,7 +12,7 @@ if [ ! -e "$INCOMING" ] ; then
 	mkdir -p $INCOMING && chmod 777 $INCOMING
 fi
 
-[ -d $REPO ] || mkdir -p $REPO
+[ -d $REPO ] || [ -f $REPO ] || mkdir -p $REPO
 
 #-- settings
 export GNUPGHOME=$DATA/gpgkey
