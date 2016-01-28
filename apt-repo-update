@@ -39,7 +39,7 @@ bzip2 -kf Packages
 chmod 775 $REPO/*
 
 #-- signed Release file
-apt-ftparchive release -o "APT::FTPArchive::Release::Label='$DISTRIBUTION';" . > Release
+apt-ftparchive release -o "APT::FTPArchive::Release::Label=$DISTRIBUTION;" . > Release
 gpg --yes -abs -u $KEYNAME -o Release.gpg Release
 
 echo "APT Repo: $DISTRIBUTION has been signed and updated."
