@@ -35,10 +35,10 @@ set -xe
 	
 	cd $REPO
 	#-- build Packages file
-	apt-ftparchive packages . > Packages
+	apt-ftparchive -d=$INCOMING/cache.db packages . > Packages
 	bzip2 -kf Packages
 	chmod 775 $REPO/*
-	
+
 	#-- signed Release file
 	apt-ftparchive release -o "APT::FTPArchive::Release::Origin=$DISTRIBUTION" . > Release
 	gpg --yes -abs -u $KEYNAME -o Release.gpg Release
