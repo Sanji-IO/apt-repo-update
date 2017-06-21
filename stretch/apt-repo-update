@@ -1,0 +1,47 @@
+#!/bin/bash
+set -xe
+(
+  # Wait for lock on /var/lock/.myscript.exclusivelock (fd 200) for 10 seconds
+  flock -x 200
+
+	DATA=${DATA:-/data}
+	DISTRIBUTION=${1:-unstable}
+	REPO=$DATA/$DISTRIBUTION
+	INCOMING=$DATA/incoming/$DISTRIBUTION
+	
+	if [ ! -e "$INCOMING" ] ; then
+		mkdir -p $INCOMING && chmod 777 $INCOMING
+	fi
+	
+	[ -d $REPO ] || [ -f $REPO ] || mkdir -p $REPO
+	
+	#-- settings
+	export GNUPGHOME=$DATA/gpgkey
+	export KEYNAME="moxa-sys-apt"
+	
+	#-- one-time setup
+	if [ ! -e "$GNUPGHOME/secring.gpg" ] ; then
+	   gpg --import -v -v ./secret.gpg
+	   gpg --import -v -v ./public.gpg
+	   gpg --list-keys
+	fi
+	
+	#-- symlink .deb files from adjacent sub-directories
+	# find ../repos -name '*.deb' -exec ln -s '{}' . \;
+	
+	rm -rf $REPO/*
+	cp -r $INCOMING/*.deb $REPO
+	dpkg-sig -k $KEYNAME -s builder $REPO/*.deb
+	
+	cd $REPO
+	#-- build Packages file
+	apt-ftparchive packages . > Packages
+	bzip2 -kf Packages
+	chmod 775 $REPO/*
+
+	#-- signed Release file
+	apt-ftparchive release -o "APT::FTPArchive::Release::Origin=$DISTRIBUTION" . > Release
+	gpg --yes -abs -u $KEYNAME -o Release.gpg Release
+	
+	echo "APT Repo: $DISTRIBUTION has been signed and updated."
+) 200>apt.lock
