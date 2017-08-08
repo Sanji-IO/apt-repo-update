@@ -36,7 +36,9 @@ set -xe
 	cd $REPO
 	#-- build Packages file
 	# apt-ftparchive packages . > Packages
-	dpkg-scanpackages . > Packages
+	dpkg-scanpackages -a all . > Packages
+	dpkg-scanpackages -a amd64 . >> Packages
+	dpkg-scanpackages -a armhf . >> Packages
 	bzip2 -kf Packages
 	chmod 775 $REPO/*
 
